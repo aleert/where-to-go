@@ -2,6 +2,10 @@
 where-to-go
 =============================
 
+This is a learning project build for dvmn.
+The goal of the project is to build a backend for website,
+that lets you tag different places on a map.
+
 This project is build with `test-django-template`_ - template  used for
 experiments with project setup to get a better grasp on django projects
 structure and development processes.
