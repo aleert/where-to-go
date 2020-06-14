@@ -1,0 +1,35 @@
+version: "3.7"
+
+volumes:
+  postgres_data_dev: {}
+  postgres_backup_dev: {}
+
+services:
+  db:
+    image: postgres:12.2-alpine
+    env_file:
+      - .envs/.local/.postgres/.postgres
+    volumes:
+    - postgres_data_dev:/var/lib/postgresql/data
+    - postgres_backup_dev:/backups
+
+
+  django:
+#    init: true
+    build:
+      context: ""
+      dockerfile: ./docker/local/django/Dockerfile
+    depends_on:
+      - db
+#    command: >
+#      sh -c "python manage.py wait_for_db &&
+#             python manage.py migrate --noinput &&
+#             python manage.py runserver_plus 0.0.0.0:8000"
+    env_file:
+      - .envs/.local/.django/.django
+      - .envs/.local/.postgres/.postgres
+    ports:
+    - "8000:8000"
+    volumes:
+    - .:/app
+    command: /start
