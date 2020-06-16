@@ -15,8 +15,10 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
+from server.apps.places.views import home
+
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='pages/home.html'), name='home'),
+    path('', home, name='home'),
     path(
         'about/', TemplateView.as_view(template_name='pages/about.html'), name='about',
     ),
@@ -25,6 +27,9 @@ urlpatterns = [
     # users management
     path('users/', include('server.apps.users.urls', namespace='users')),
     path('accounts/', include('allauth.urls')),  # noqa: DJ05
+    # we don't have an api, but since we have one view and it serves json for frontend
+    # let's call it so
+    path('api/v1/', include('server.apps.places.urls', namespace='places')),
 ]
 
 if settings.DEBUG:  # pragma: no cover
