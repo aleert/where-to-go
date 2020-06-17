@@ -70,7 +70,7 @@ class ImageOrderAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
-class BookInline(admin.StackedInline):
+class ImageInline(admin.StackedInline):
     model = Image
     ordering = ('_order', )
 
@@ -80,7 +80,7 @@ class UserAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'description_short', 'lat', 'lon')
     search_fields = ('title', )
-    inlines = (BookInline, )
+    inlines = (ImageInline, )
     form = ImageOrderAdminForm
 
 
