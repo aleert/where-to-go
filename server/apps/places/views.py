@@ -13,7 +13,7 @@ def place_details_json(request, place_id: int):
     """Return json representation of place."""
     # have to pass iterable to serializer
     place = Place.objects.annotate(
-        imgs=ArrayAgg('image__location'),
+        imgs=ArrayAgg('image__location', ordering=('image___order', )),
     ).values(
         'title', 'imgs', 'description_long', 'description_short', 'lon', 'lat',
     ).get(
