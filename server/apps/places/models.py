@@ -25,9 +25,10 @@ class Image(models.Model):
 
     location = models.ImageField(_('Image location'), upload_to='places/%Y/%m')
     place = models.ForeignKey(to='Place', on_delete=models.CASCADE)
+    _order = models.PositiveIntegerField(default=0, blank=False, null=False)
 
     class Meta:
-        order_with_respect_to = 'place'
+        ordering = ('_order', )
         verbose_name = _('Image')
         verbose_name_plural = _('Images')
 
