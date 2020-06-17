@@ -5,6 +5,8 @@ from typing import List
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.db.models import QuerySet
+from django.utils.html import format_html
 from django.utils.translation import gettext as _
 
 from server.apps.places.models import Image, Place
@@ -18,6 +20,10 @@ class ImageOrderAdminForm(forms.ModelForm):
         help_text="Enter order of images in comma separated list, e.g. '0,1,2,3'",
         required=False,
     )
+
+    class Meta:
+        model = Place
+        fields = '__all__'
 
     def save(self, commit=True):
         new_order = self.cleaned_data.get('assign_order', None)
@@ -65,14 +71,23 @@ class ImageOrderAdminForm(forms.ModelForm):
 
         return new_order
 
-    class Meta:
-        model = Place
-        fields = '__all__'
+
+def get_image_html(self, image: QuerySet[Image]) -> str:
+    """Helper function to add display image as custom admin field."""
+    return format_html('<img src="{url}" style="max-height:{max_height};"/>'.format(
+        url=image.location.url,
+        max_height='200px',
+    ),
+    )
 
 
-class ImageInline(admin.StackedInline):
+class ImageInline(admin.TabularInline):
     model = Image
     ordering = ('_order', )
+    readonly_fields = ('image', )
+
+    image = get_image_html
+    image.short_description = _('Image')
 
 
 @admin.register(Place)
@@ -87,5 +102,8 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
 
-    list_display = ('__str__', 'location', 'place')
+    list_display = ('__str__', 'location', 'place', 'image')
     search_fields = ('place', )
+
+    image = get_image_html
+    image.short_description = _('Image')
