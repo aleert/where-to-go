@@ -34,4 +34,5 @@ class Image(models.Model):
         verbose_name_plural = _('Images')
 
     def __str__(self):
-        return f'Picture {self._order} of {self.place}'
+        pattern = _('Picture {order} of Place {title}')
+        return pattern.format(order=self._order, title=self.place.title)
