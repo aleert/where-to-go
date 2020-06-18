@@ -1,0 +1,370 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-18 20:13+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: server/apps/places/admin.py:27 server/apps/places/admin.py:45
+#: server/apps/places/models.py:33
+msgid "Image"
+msgstr "Картинка"
+
+#: server/apps/places/apps.py:7 server/apps/places/models.py:19
+msgid "Places"
+msgstr "Места"
+
+#: server/apps/places/models.py:9
+msgid "title"
+msgstr "Название"
+
+#: server/apps/places/models.py:11
+msgid "short description"
+msgstr "Краткое описание"
+
+#: server/apps/places/models.py:13
+msgid "description"
+msgstr "Описание"
+
+#: server/apps/places/models.py:14
+msgid "latitude"
+msgstr "Широта"
+
+#: server/apps/places/models.py:15
+msgid "longitude"
+msgstr "Долгота"
+
+#: server/apps/places/models.py:18
+msgid "Place"
+msgstr "Место"
+
+#: server/apps/places/models.py:27
+msgid "Image location"
+msgstr "Путь до изображения"
+
+#: server/apps/places/models.py:34
+msgid "Images"
+msgstr "Картинки"
+
+#: server/apps/places/models.py:37
+#, python-brace-format
+msgid "Picture {order} of Place {title}"
+msgstr "Картинка {order} места {title}"
+
+#: server/apps/users/apps.py:9
+msgid "Users"
+msgstr "Пользователи"
+
+#: server/apps/users/forms.py:16
+msgid "This username has already been taken."
+msgstr "Это имя пользователя занято."
+
+#: server/apps/users/models.py:11
+msgid "Name of User"
+msgstr "Имя пользователя"
+
+#: server/apps/users/views.py:34
+msgid "Infos successfully updated"
+msgstr "Информация обновлена"
+
+#: server/templates/account/account_inactive.html:5
+#: server/templates/account/account_inactive.html:8
+msgid "Account Inactive"
+msgstr "Аккаунт неактивен"
+
+#: server/templates/account/account_inactive.html:10
+msgid "This account is inactive."
+msgstr "Этот аккаунт неактивен."
+
+#: server/templates/account/email.html:7
+msgid "Account"
+msgstr "Аккаунт"
+
+#: server/templates/account/email.html:10
+msgid "E-mail Addresses"
+msgstr "E-mail адреса"
+
+#: server/templates/account/email.html:13
+msgid "The following e-mail addresses are associated with your account:"
+msgstr "К вашему аккаунту привязаны следующие e-mail адреса:"
+
+#: server/templates/account/email.html:27
+msgid "Verified"
+msgstr "Подтверждён"
+
+#: server/templates/account/email.html:29
+msgid "Unverified"
+msgstr "Не подтверждён"
+
+#: server/templates/account/email.html:31
+msgid "Primary"
+msgstr "Основной"
+
+#: server/templates/account/email.html:37
+msgid "Make Primary"
+msgstr "Сделать основным"
+
+#: server/templates/account/email.html:38
+msgid "Re-send Verification"
+msgstr "Повторно отправить письмо с верификацией"
+
+#: server/templates/account/email.html:39
+msgid "Remove"
+msgstr "Удалить"
+
+#: server/templates/account/email.html:46
+msgid "Warning:"
+msgstr "Внимание:"
+
+#: server/templates/account/email.html:46
+msgid ""
+"You currently do not have any e-mail address set up. You should really add "
+"an e-mail address so you can receive notifications, reset your password, etc."
+msgstr ""
+"Пожалуйста укажите ваш e-mail. Указав e-mail вы сможете получать "
+"уведомления, изменять свой пароль и т.д."
+
+#: server/templates/account/email.html:51
+msgid "Add E-mail Address"
+msgstr "Добавить e-mail"
+
+#: server/templates/account/email.html:56
+msgid "Add E-mail"
+msgstr "Добавить e-mail"
+
+#: server/templates/account/email.html:66
+msgid "Do you really want to remove the selected e-mail address?"
+msgstr "Вы точно хотите удалить выбранный e-mail?"
+
+#: server/templates/account/email_confirm.html:6
+#: server/templates/account/email_confirm.html:10
+msgid "Confirm E-mail Address"
+msgstr "Подтверждение e-mail адреса"
+
+#: server/templates/account/email_confirm.html:16
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
+"address for user %(user_display)s."
+msgstr ""
+"Пожалуйста подтвердите что <a href=\"mailto:%(email)s\">%(email)s</a> "
+"является e-mail адресом пользователя %(user_display)s."
+
+#: server/templates/account/email_confirm.html:20
+msgid "Confirm"
+msgstr "Подтвердить"
+
+#: server/templates/account/email_confirm.html:27
+#, python-format
+msgid ""
+"This e-mail confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new e-mail confirmation request</a>."
+msgstr ""
+"Эта ссылка истекла или недействительна. Пожалуйста <a href=\"%(email_url)s"
+"\">отправьте повторный запрос на подтверждение e-mail.</a>."
+
+#: server/templates/account/login.html:7 server/templates/account/login.html:11
+#: server/templates/account/login.html:44 server/templates/base.html:138
+msgid "Sign In"
+msgstr "Зарегестрироваться"
+
+#: server/templates/account/login.html:16
+#, python-format
+msgid ""
+"Please sign in with one\n"
+"of your existing third party accounts. Or, <a href=\"%(signup_url)s\">sign "
+"up</a>\n"
+"for a %(site_name)s account and sign in below:"
+msgstr ""
+"Используйте для регистрации ваш\n"
+"сторонний аккаунт. Или, <a href=\"%(signup_url)s\">создайте новый аккаунт </"
+"a>\n"
+"на %(site_name)s и выполните вход:"
+
+#: server/templates/account/login.html:26
+msgid "or"
+msgstr "или"
+
+#: server/templates/account/login.html:33
+#, python-format
+msgid ""
+"If you have not created an account yet, then please\n"
+"<a href=\"%(signup_url)s\">sign up</a> first."
+msgstr ""
+"<a href=\"%(signup_url)s\">зарегестрируйтесь</a> если\n"
+"У вас ещё нет аккаунта"
+
+#: server/templates/account/login.html:43
+msgid "Forgot Password?"
+msgstr "Забыли пароль?"
+
+#: server/templates/account/logout.html:5
+#: server/templates/account/logout.html:8
+#: server/templates/account/logout.html:17 server/templates/base.html:129
+msgid "Sign Out"
+msgstr "Выйти"
+
+#: server/templates/account/logout.html:10
+msgid "Are you sure you want to sign out?"
+msgstr "Вы точно хотите выйти?"
+
+#: server/templates/account/password_change.html:6
+#: server/templates/account/password_change.html:9
+#: server/templates/account/password_change.html:14
+#: server/templates/account/password_reset_from_key.html:5
+#: server/templates/account/password_reset_from_key.html:8
+#: server/templates/account/password_reset_from_key_done.html:4
+#: server/templates/account/password_reset_from_key_done.html:7
+msgid "Change Password"
+msgstr "Изменить пароль"
+
+#: server/templates/account/password_reset.html:7
+#: server/templates/account/password_reset.html:11
+#: server/templates/account/password_reset_done.html:6
+#: server/templates/account/password_reset_done.html:9
+msgid "Password Reset"
+msgstr "Сбросить пароль"
+
+#: server/templates/account/password_reset.html:16
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll send you "
+"an e-mail allowing you to reset it."
+msgstr "Введите ваш e-mail чтобы получить ссылку для сброса пароля."
+
+#: server/templates/account/password_reset.html:21
+msgid "Reset My Password"
+msgstr "Сбросить мой пароль"
+
+#: server/templates/account/password_reset.html:24
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr "Пожалуйста свяжитесь с нами если вы не можете сбросить свой пароль."
+
+#: server/templates/account/password_reset_done.html:15
+#, fuzzy
+#| msgid ""
+#| "We have sent an e-mail to you for\n"
+#| "verification. Please click on the link inside this e-mail. Please\n"
+#| "contact us if you do not receive it within a few minutes."
+msgid ""
+"We have sent you an e-mail. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+"Мы отправили вам e-mail со ссылкой для подтверждения. Перейдите по ссылкедля "
+"подтверждения или свяжитесь с нами, если вы не получили e-mail."
+
+#: server/templates/account/password_reset_from_key.html:8
+msgid "Bad Token"
+msgstr "Недействительный токен"
+
+#: server/templates/account/password_reset_from_key.html:12
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr ""
+"Ссылка на сброс пароля недействительна. Возможно, она уже была использована."
+"Запросите <a href=\"%(passwd_reset_url)s\">сброс пароля</a> ещё раз."
+
+#: server/templates/account/password_reset_from_key.html:18
+msgid "change password"
+msgstr "изменить пароль"
+
+#: server/templates/account/password_reset_from_key.html:21
+#: server/templates/account/password_reset_from_key_done.html:8
+msgid "Your password is now changed."
+msgstr "Ваш пароль изменён"
+
+#: server/templates/account/password_set.html:6
+#: server/templates/account/password_set.html:9
+#: server/templates/account/password_set.html:14
+msgid "Set Password"
+msgstr "Установить пароль"
+
+#: server/templates/account/signup.html:6
+msgid "Signup"
+msgstr "Войти"
+
+#: server/templates/account/signup.html:9
+#: server/templates/account/signup.html:19 server/templates/base.html:134
+msgid "Sign Up"
+msgstr "Войти"
+
+#: server/templates/account/signup.html:11
+#, python-format
+msgid ""
+"Already have an account? Then please <a href=\"%(login_url)s\">sign in</a>."
+msgstr ""
+"Уже зарегестрировались? Пожалуйста, <a href=\"%(login_url)s\">войдите</a>."
+
+#: server/templates/account/signup_closed.html:5
+#: server/templates/account/signup_closed.html:8
+msgid "Sign Up Closed"
+msgstr "Регистрация закрыта"
+
+#: server/templates/account/signup_closed.html:10
+msgid "We are sorry, but the sign up is currently closed."
+msgstr "Регистрация временно недоступна."
+
+#: server/templates/account/verification_sent.html:5
+#: server/templates/account/verification_sent.html:8
+#: server/templates/account/verified_email_required.html:5
+#: server/templates/account/verified_email_required.html:8
+msgid "Verify Your E-mail Address"
+msgstr "Подтвердить e-mail адрес"
+
+#: server/templates/account/verification_sent.html:10
+msgid ""
+"We have sent an e-mail to you for verification. Follow the link provided to "
+"finalize the signup process. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+"Мы отправили вам e-mail со ссылкой для подтверждения. Перейдите по ссылкедля "
+"завершения регистрации или свяжитесь с нами, если вы не получили e-mail."
+
+#: server/templates/account/verified_email_required.html:12
+msgid ""
+"This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your e-mail address. "
+msgstr ""
+"Для использования этого раздела\n"
+"вам необходимо подтвердить что указанный в вашем аккаунте\n"
+"e-mail адрес принадлежит вам. "
+
+#: server/templates/account/verified_email_required.html:16
+msgid ""
+"We have sent an e-mail to you for\n"
+"verification. Please click on the link inside this e-mail. Please\n"
+"contact us if you do not receive it within a few minutes."
+msgstr ""
+"Мы отправили вам e-mail со ссылкой для подтверждения. Перейдите по ссылкедля "
+"подтверждения или свяжитесь с нами, если вы не получили e-mail."
+
+#: server/templates/account/verified_email_required.html:20
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
+"mail address</a>."
+msgstr ""
+"<strong>Внимание:</strong> вы всё ещё можете <a href=\"%(email_url)s"
+"\">изменить вашe-mail</a>."
+
+#: server/templates/base.html:125
+msgid "My Profile"
+msgstr "Мой профиль"

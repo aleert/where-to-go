@@ -40,6 +40,7 @@ class ImageAdmin(admin.ModelAdmin):
 
     list_display = ('__str__', 'location', 'place', 'image')
     search_fields = ('place', )
+    ordering = ('place', '_order')
 
     image = get_image_html
     image.short_description = _('Image')
