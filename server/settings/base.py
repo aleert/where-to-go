@@ -73,6 +73,7 @@ DJANGO_APPS = [
     'django.forms',
 ]
 THIRD_PARTY_APPS = [
+    'tinymce',
     'crispy_forms',
     'adminsortable2',
     'allauth',

@@ -30,6 +30,8 @@ urlpatterns = [
     # we don't have an api, but since we have one view and it serves json for frontend
     # let's call it so
     path('api/v1/', include('server.apps.places.urls', namespace='places')),
+
+    path('tinymce/', include('tinymce.urls')),  # noqa: DJ05
 ]
 
 if settings.DEBUG:  # pragma: no cover

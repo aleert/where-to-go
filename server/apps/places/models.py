@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import TimeStampedModel
+from tinymce.models import HTMLField
 
 
 class Place(TimeStampedModel):
@@ -9,7 +10,7 @@ class Place(TimeStampedModel):
     description_short = models.CharField(
         _('short description'), max_length=255, blank=True,  # noqa: WPS432
     )
-    description_long = models.TextField(_('description'))
+    description_long = HTMLField(_('description'))
     lat = models.FloatField(_('latitude'))
     lon = models.FloatField(_('longitude'))
 
