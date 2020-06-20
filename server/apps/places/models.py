@@ -8,7 +8,7 @@ class Place(TimeStampedModel):
 
     title = models.CharField(_('title'), max_length=255)  # noqa: WPS432
     description_short = models.CharField(
-        _('short description'), max_length=255, blank=True,  # noqa: WPS432
+        _('short description'), max_length=1000, blank=True,
     )
     description_long = HTMLField(_('description'))
     lat = models.FloatField(_('latitude'))
