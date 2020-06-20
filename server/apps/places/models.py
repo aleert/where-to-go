@@ -17,6 +17,7 @@ class Place(TimeStampedModel):
     class Meta:
         verbose_name = _('Place')
         verbose_name_plural = _('Places')
+        unique_together = ('title', 'lat', 'lon')
 
     def __str__(self):
         return self.title
