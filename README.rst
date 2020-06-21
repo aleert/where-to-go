@@ -11,9 +11,9 @@ This project is build with `test-django-template`_ - template  used for
 experiments with project setup to get a better grasp on django projects
 structure and development processes.
 
-You can check out deployed version here: `my_site_address`_.
-If you want to add some locations - use `admin interface`_.
-`Contact me`_ to get a username and a password for it.
+You can check out deployed version here: `where-to-go-moscow.herokuapp.com`_.
+If you want to add some locations - use admin interface.
+`Contact me`_ to get its address and also username and a password for it.
 When you log in go to ``Places -> add`` or ``Места -> Добавить``, depending
 on locale you use. It should be pretty straightforward from there.
 Note when editing Place you can change images order by dragging them.
@@ -315,3 +315,5 @@ Maybe
 .. _frontend: https://github.com/devmanorg/where-to-go-frontend/
 .. _example places here: https://github.com/devmanorg/where-to-go-places/tree/master/places
 .. _django translation docs: https://docs.djangoproject.com/en/3.0/topics/i18n/translation/#localization-how-to-create-language-files
+.. _where-to-go-moscow.herokuapp.com: https://where-to-go-moscow.herokuapp.com
+.. _Contact me: mailto:aleert@yandex.ru
