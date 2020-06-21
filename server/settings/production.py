@@ -132,3 +132,30 @@ LOGGING = {
 # Your stuff...
 # ------------------------------------------------------------------------------
 SECURE_REFERRER_POLICY = 'same-origin'
+
+INSTALLED_APPS += ['storages']  # noqa:F405
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_ACCESS_KEY_ID = config('DJANGO_AWS_ACCESS_KEY_ID')
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_SECRET_ACCESS_KEY = config('DJANGO_AWS_SECRET_ACCESS_KEY')
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_STORAGE_BUCKET_NAME = config('DJANGO_AWS_STORAGE_BUCKET_NAME')
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_QUERYSTRING_AUTH = False
+# DO NOT change these unless you know what you're doing.
+_AWS_EXPIRY = 60 * 60 * 24 * 7
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': f'max-age={_AWS_EXPIRY}, s-maxage={_AWS_EXPIRY}, must-revalidate',
+}
+#  https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_DEFAULT_ACL = None
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_S3_REGION_NAME = config('DJANGO_AWS_S3_REGION_NAME', default=None)
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
+AWS_S3_CUSTOM_DOMAIN = config('DJANGO_AWS_S3_CUSTOM_DOMAIN', default=None)
+aws_s3_domain = (
+    AWS_S3_CUSTOM_DOMAIN or f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
+)
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'https://{aws_s3_domain}/'
