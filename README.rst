@@ -5,10 +5,18 @@ where-to-go
 This is a learning project build for dvmn.
 The goal of the project is to build a backend for website,
 that lets you tag different places on a map.
+This project uses premade `frontend`_.
 
 This project is build with `test-django-template`_ - template  used for
 experiments with project setup to get a better grasp on django projects
 structure and development processes.
+
+You can check out deployed version here: `my_site_address`_.
+If you want to add some locations - use `admin interface`_.
+`Contact me`_ to get a username and a password for it.
+When you log in go to ``Places -> add`` or ``Места -> Добавить``, depending
+on locale you use. It should be pretty straightforward from there.
+Note when editing Place you can change images order by dragging them.
 
 Running with docker
 ===================
@@ -78,6 +86,8 @@ To run specific command within a container do this:
 .. code-block:: shell
 
    docker-compose run --rm <container-name> <command>
+
+.. _create superuser:
 
 Creating a superuser
 ~~~~~~~~~~~~~~~~~~~~
@@ -234,6 +244,27 @@ to run a project.
 
 Go to `localhost`_ to see it live.
 
+Creating test data
+==================
+
+There's two ways to create a test data:
+
+1. You can `create superuser`_ and then add places and images
+with admin interface.
+
+2. Load a place from json with a management command:
+
+.. code-block:: shell
+
+   python manage.py load_place http://path/to.json
+
+You can find json files with `example places here`_.
+Use ``raw`` file address as a path to load it.
+
+Those are example commands, adjust them whether you use docker or
+local development environment.
+
+
 Management commands
 ===================
 
@@ -242,6 +273,35 @@ As name suggests, it can be used to wait for postgres db to become
 available, ``docker-compose.yml`` contain commented out code,
 showing how to use that command instead of current implementation
 with ``entrypoint`` file (borrowed from `django-cookiecutter`_).
+
+There's also project specific ``load place`` command, described above.
+
+
+Compiling translations
+======================
+
+If you want for this site to be available in multiple languages
+you have to complile message files (currently there's only Russian translation).
+
+.. code-block::shell
+
+   python manage.py compilemessages --settings=server.settings.local
+
+If you want to create your own translation refer to `django translation docs`_.
+
+
+TODOs
+=====
+
+* Add CMS instead of managing content with admin interface
+* Serve frontend separately, setup CORS
+* Load data only for displayed portion of the map (use PostGIS prolly?)
+
+Maybe
+^^^^^
+* Add different roles (user, moderator)
+* Add commenting system
+* Setup docker production deploy to ECS
 
 
 .. _Docker: https://docs.docker.com/get-docker/
@@ -252,3 +312,6 @@ with ``entrypoint`` file (borrowed from `django-cookiecutter`_).
 .. _localhost: http://localhost:8000/
 .. _test-django-template: https://github.com/aleert/test-django-template
 .. _django-cookiecutter: https://github.com/pydanny/cookiecutter-django
+.. _frontend: https://github.com/devmanorg/where-to-go-frontend/
+.. _example places here: https://github.com/devmanorg/where-to-go-places/tree/master/places
+.. _django translation docs: https://docs.djangoproject.com/en/3.0/topics/i18n/translation/#localization-how-to-create-language-files
