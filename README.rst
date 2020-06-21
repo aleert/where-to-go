@@ -12,6 +12,10 @@ experiments with project setup to get a better grasp on django projects
 structure and development processes.
 
 You can check out deployed version here: `where-to-go-moscow.herokuapp.com`_.
+
+Note however this deployment doesn't use heroku buildpack with getext
+and I don't want to add compiled messages to repo, so only english version available.
+
 If you want to add some locations - use admin interface.
 `Contact me`_ to get its address and also username and a password for it.
 When you log in go to ``Places -> add`` or ``Места -> Добавить``, depending
