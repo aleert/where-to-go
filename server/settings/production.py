@@ -1,3 +1,5 @@
+from dj_database_url import parse as db_url
+
 from server.settings.base import *  # noqa: WPS347
 from server.settings.base import config
 
@@ -6,40 +8,24 @@ from server.settings.base import config
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default=['example.com'])
+ALLOWED_HOSTS = config(
+    'DJANGO_ALLOWED_HOSTS',
+    cast=lambda line: [host.strip() for host in line.split(',')],
+)
 
 # DATABASES
 # ------------------------------------------------------------------------------
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('POSTGRES_DB'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('POSTGRES_HOST'),
-        'PORT': config('POSTGRES_PORT', cast=int),
-        'CONN_MAX_AGE': config('CONN_MAX_AGE', cast=int, default=60),
-        'OPTIONS': {
-            'connect_timeout': 10,
-        },
-    },
-}
+DATABASES['default'] = config('DATABASE_URL', cast=db_url)
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 DATABASES['default']['CONN_MAX_AGE'] = config('CONN_MAX_AGE', default=60, cast=int)
 
 # CACHES
 # ------------------------------------------------------------------------------
+# setup to django-redis if actually needed
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config('REDIS_URL'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            # Mimicing memcache behavior.
-            # http://jazzband.github.io/django-redis/latest/#_memcached_exceptions_behavior
-            'IGNORE_EXCEPTIONS': True,
-        },
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': '',
     },
 }
 
@@ -88,35 +74,14 @@ TEMPLATES[-1]['OPTIONS']['loaders'] = [  # type: ignore[index]
 
 # EMAIL
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
-DEFAULT_FROM_EMAIL = config(
-    'DJANGO_DEFAULT_FROM_EMAIL', default='My Awesome Project <noreply@example.com>',
-)
-# https://docs.djangoproject.com/en/dev/ref/settings/#server-email
-SERVER_EMAIL = config('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
-# https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
-EMAIL_SUBJECT_PREFIX = config(
-    'DJANGO_EMAIL_SUBJECT_PREFIX', default='[My Test Project]',
-)
+# disable email verification for deploy
+ACCOUNT_EMAIL_VERIFICATION = None
+
 
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
-ADMIN_URL = config('DJANGO_ADMIN_URL')
-
-# Anymail
-# ------------------------------------------------------------------------------
-# https://anymail.readthedocs.io/en/stable/installation/#installing-anymail
-INSTALLED_APPS += ['anymail']
-# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-# https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
-# https://anymail.readthedocs.io/en/stable/esps/mailgun/
-EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
-ANYMAIL = {
-    'MAILGUN_API_KEY': config('MAILGUN_API_KEY'),
-    'MAILGUN_SENDER_DOMAIN': config('MAILGUN_DOMAIN'),
-    'MAILGUN_API_URL': config('MAILGUN_API_URL', default='https://api.mailgun.net/v3'),
-}
+ADMIN_URL = config('DJANGO_ADMIN_URL', default='admin/')
 
 
 # LOGGING
@@ -166,3 +131,4 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+SECURE_REFERRER_POLICY = 'same-origin'
