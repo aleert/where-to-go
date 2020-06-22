@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-21 13:10+0000\n"
+"POT-Creation-Date: 2020-06-22 14:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -353,8 +353,8 @@ msgid ""
 "verification. Please click on the link inside this e-mail. Please\n"
 "contact us if you do not receive it within a few minutes."
 msgstr ""
-"Мы отправили вам e-mail со ссылкой для подтверждения. Перейдите по ссылкедля "
-"подтверждения или свяжитесь с нами, если вы не получили e-mail."
+"Мы отправили вам e-mail со ссылкой для подтверждения. Перейдите по ссылке "
+"для подтверждения или свяжитесь с нами, если вы не получили e-mail."
 
 #: server/templates/account/verified_email_required.html:20
 #, python-format
@@ -372,6 +372,10 @@ msgstr "Куда пойти - Москва глазами Артёма"
 #: server/templates/base.html:58
 msgid "Pick a place"
 msgstr "Выберете место на карте"
+
+#: server/templates/base.html:117
+msgid "Home"
+msgstr "Главная"
 
 #: server/templates/base.html:120
 msgid "About"
