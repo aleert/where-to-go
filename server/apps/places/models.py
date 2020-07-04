@@ -1,23 +1,26 @@
+from django.contrib.postgres.indexes import GistIndex
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from model_utils.models import TimeStampedModel
 from tinymce.models import HTMLField
 
+from server.apps.places.fields import PointField
 
-class Place(TimeStampedModel):
+
+class Place(models.Model):
 
     title = models.CharField(_('title'), max_length=255)  # noqa: WPS432
     description_short = models.CharField(
         _('short description'), max_length=1000, blank=True,
     )
     description_long = HTMLField(_('description'))
-    lat = models.FloatField(_('latitude'))
-    lon = models.FloatField(_('longitude'))
+    coord = PointField(_('coordinates (lng, lat)'))
 
     class Meta:
         verbose_name = _('Place')
         verbose_name_plural = _('Places')
-        unique_together = ('title', 'lat', 'lon')
+        indexes = (
+            GistIndex(fields=['coord']),
+        )
 
     def __str__(self):
         return self.title

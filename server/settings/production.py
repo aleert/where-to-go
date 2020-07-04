@@ -159,3 +159,7 @@ aws_s3_domain = (
 )
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = f'https://{aws_s3_domain}/'
+
+CORS_ORIGIN_WHITELIST = [
+    config('DJANGO_CORS_WHITELIST'),
+]

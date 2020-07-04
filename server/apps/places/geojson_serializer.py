@@ -36,7 +36,7 @@ def _place_to_feature(place: Dict) -> Dict:
         'type': 'Feature',
         'geometry': {
             'type': 'Point',
-            'coordinates': [place['lon'], place['lat']],
+            'coordinates': [place['coord'].lon, place['coord'].lat],
         },
         'properties': {
             'title': place['title'],

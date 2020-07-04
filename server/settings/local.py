@@ -79,3 +79,4 @@ INSTALLED_APPS += ['django_extensions']
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+CORS_ORIGIN_ALLOW_ALL = True

@@ -46,7 +46,6 @@
     }
   </style>
 
-  {{ geo_data|json_script:"places-geojson" }}
 
   <script id="app-template" type="text/template">
     <div v-bind:class="{'sidebar-content': 1, 'bg-white': selectedPlace, 'bg-secondary': !selectedPlace}">
@@ -183,8 +182,69 @@
 <script src="{% static 'js/project.js' %}"></script>
 
 <script>
+  const SERVER_URL = 'http://localhost:8000';
   var map = L.map('map');
-  map.setView([55.753989, 37.623191], 11);
+  var places;
+  var geo_layer;
+  map.on('viewreset', function updatePoints() {
+      let url = new URL('api/v1/points', SERVER_URL);
+      let bounds = map.getBounds();
+      if (loaded_bounds && loaded_bounds.contains(bounds)) {return null;}
+      let extended_bounds = bounds.pad(1.5);
+      loaded_bounds = extended_bounds;
+      let up_right = extended_bounds.getNorthEast();
+      let low_left = extended_bounds.getSouthWest();
+      let params = {up_right: [up_right.lng, up_right.lat], low_left: [low_left.lng, low_left.lat]};
+
+      url.search = new URLSearchParams(params).toString();
+
+      fetch(url)
+          .then(data => data.json())
+          .then(data => {places = data;})
+          .then(data => {
+
+              geo_layer = L.geoJSON(places, {
+                  pointToLayer: function(geoJsonPoint, latlng) {
+                      if (geoJsonPoint.geometry.type != "Point"){
+                          return
+                      }
+
+                      let color = geoJsonPoint.properties.color || 'red';
+
+                      var pulsingIcon = L.icon.pulse({
+                          iconSize: [12, 12],
+                          color: color,
+                          fillColor: color,
+                          heartbeat: 2.5,
+                      });
+
+                      let marker = L.marker(latlng, {
+                          icon: pulsingIcon,
+                          riseOnHover: true,
+                      });
+
+                      marker.bindTooltip(geoJsonPoint.properties.title);
+                      marker.bindPopup(function (layer) {
+                          return geoJsonPoint.properties.title;
+                      })
+
+                      marker.on('click', function(event){
+                          log.debug('Feature selected', geoJsonPoint);
+                          sidebar.show();
+                          loadPlaceInfo(geoJsonPoint.properties.placeId, geoJsonPoint.properties.detailsUrl);
+                      });
+                      return marker;
+                  }
+              });
+              geo_layer.addTo(map);
+
+          })
+          .catch(err => console.log(err));
+  });
+  map.setView([55.753989, 37.623191], 15);
+  var loaded_bounds = map.getBounds().pad(1.5);
+
+  // bounds for which places are already loaded
 
   L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(map);
 
@@ -217,54 +277,75 @@
     }
   }).addTo(map);
 
+
+  map.on('moveend', function updatePoints() {
+    let url = new URL('api/v1/points', SERVER_URL);
+    let bounds = map.getBounds();
+    if (loaded_bounds.contains(bounds)) {return null;}
+    let extended_bounds = bounds.pad(1.5);
+    loaded_bounds = extended_bounds;
+    let up_right = extended_bounds.getNorthEast();
+    let low_left = extended_bounds.getSouthWest();
+    let params = {up_right: [up_right.lng, up_right.lat], low_left: [low_left.lng, low_left.lat]};
+
+    url.search = new URLSearchParams(params).toString();
+
+    fetch(url)
+        .then(data => data.json())
+        .then(data => {places = data;})
+        .then(data => {
+
+              geo_layer.remove();
+              geo_layer = L.geoJSON(places, {
+                  pointToLayer: function(geoJsonPoint, latlng) {
+                      if (geoJsonPoint.geometry.type != "Point"){
+                          return
+                      }
+
+                      let color = geoJsonPoint.properties.color || 'red';
+
+                      var pulsingIcon = L.icon.pulse({
+                          iconSize: [12, 12],
+                          color: color,
+                          fillColor: color,
+                          heartbeat: 2.5,
+                      });
+
+                      let marker = L.marker(latlng, {
+                          icon: pulsingIcon,
+                          riseOnHover: true,
+                      });
+
+                      marker.bindTooltip(geoJsonPoint.properties.title);
+                      marker.bindPopup(function (layer) {
+                          return geoJsonPoint.properties.title;
+                      })
+
+                      marker.on('click', function(event){
+                          log.debug('Feature selected', geoJsonPoint);
+                          sidebar.show();
+                          loadPlaceInfo(geoJsonPoint.properties.placeId, geoJsonPoint.properties.detailsUrl);
+                      });
+                      return marker;
+                  }
+              });
+              geo_layer.addTo(map);
+
+          })
+        .catch(err => console.log(err));
+  });
+
   function loadJSON(elementId){
     let element = document.getElementById(elementId);
 
     if (!element){
-      log.error(`Not found element with id '${elementId}'.`)
+      log.error(`Not found element with id '${elementId}'.`);
       return null;
     }
 
     return JSON.parse(element.textContent);
   }
 
-  let places = loadJSON('places-geojson');
-  log.debug('Load GeoJSON for places', places);
-
-
-  L.geoJSON(places, {
-    pointToLayer: function(geoJsonPoint, latlng) {
-      if (geoJsonPoint.geometry.type != "Point"){
-        return
-      }
-
-      let color = geoJsonPoint.properties.color || 'red';
-
-      var pulsingIcon = L.icon.pulse({
-        iconSize: [12, 12],
-        color: color,
-        fillColor: color,
-        heartbeat: 2.5,
-      });
-
-      let marker = L.marker(latlng, {
-        icon: pulsingIcon,
-        riseOnHover: true,
-      });
-
-      marker.bindTooltip(geoJsonPoint.properties.title);
-      marker.bindPopup(function (layer) {
-        return geoJsonPoint.properties.title;
-      })
-
-      marker.on('click', function(event){
-        log.debug('Feature selected', geoJsonPoint);
-        sidebar.show();
-        loadPlaceInfo(geoJsonPoint.properties.placeId, geoJsonPoint.properties.detailsUrl);
-      });
-      return marker;
-    }
-  }).addTo(map);
 
   var sidebarApp = new Vue({
     el: '#sidebar-app',
