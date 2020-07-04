@@ -20,6 +20,11 @@ When you log in go to ``Places -> add`` or ``Места -> Добавить``, d
 on locale you use. It should be pretty straightforward from there.
 Note when editing Place you can change images order by dragging them.
 
+This project loads places dynamically, so even there's a LOT of places in
+you database, only small part of them will be loaded (as for now it's part
+of the map you view extended by x1.5 factor for each side). Note however
+that fronted will still be laggy if there's too much places onscreen (TODO optimize frontend).
+
 Running with docker
 ===================
 
