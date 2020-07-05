@@ -14,6 +14,16 @@ structure and development processes.
 You can check out deployed version here: `where-to-go-moscow.herokuapp.com`_.
 Change your browser preferred language to see Eng or Ru version.
 
+**Work in progress**
+
+  There's also `progressive-loading`_ version, that loads place dynamically, based
+  on current map view. It's not hosted, but works just fine with 300+k entries
+  in the database! Be sure to check it out in the corresponding branch.
+
+  To learn why custom django fields are cool look at `stress-test`_ branch,
+  where ``progressive-loading`` version compared against implementation
+  that uses GeoDjango with PostGis.
+
 If you want to add some locations - use admin interface.
 `Contact me`_ to get its address and also username and a password for it.
 When you log in go to ``Places -> add`` or ``Места -> Добавить``, depending
@@ -297,7 +307,7 @@ TODOs
 
 * Add CMS instead of managing content with admin interface
 * Serve frontend separately, setup CORS
-* Load data only for displayed portion of the map (use PostGIS prolly?)
+* (done, progressive-loading branch) Load data only for displayed portion of the map (use PostGIS prolly?)
 
 Maybe
 ^^^^^
@@ -319,3 +329,5 @@ Maybe
 .. _django translation docs: https://docs.djangoproject.com/en/3.0/topics/i18n/translation/#localization-how-to-create-language-files
 .. _where-to-go-moscow.herokuapp.com: https://where-to-go-moscow.herokuapp.com
 .. _Contact me: mailto:aleert@yandex.ru
+.. _progressive-loading: https://github.com/aleert/where-to-go/tree/progressive-loading
+.. _stress-test: https://github.com/aleert/where-to-go/tree/stress-test
