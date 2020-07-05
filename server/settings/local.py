@@ -14,9 +14,22 @@ ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1', config('DOMAIN_NAME', None
 # DATABASES
 # ------------------------------------------------------------------------------
 DATABASES = {
-    'default': {
+    'default': {},
+    'pure_postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('POSTGRES_DB'),
+        'NAME': 'test_pure_postgres',
+        'USER': config('POSTGRES_USER'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'HOST': config('POSTGRES_HOST'),
+        'PORT': config('POSTGRES_PORT', cast=int),
+        'CONN_MAX_AGE': config('CONN_MAX_AGE', cast=int, default=60),
+        'OPTIONS': {
+            'connect_timeout': 10,
+        },
+    },
+    'postgis': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'test_postgis',
         'USER': config('POSTGRES_USER'),
         'PASSWORD': config('POSTGRES_PASSWORD'),
         'HOST': config('POSTGRES_HOST'),
@@ -27,7 +40,8 @@ DATABASES = {
         },
     },
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+DATABASES['pure_postgres']['ATOMIC_REQUESTS'] = True
+DATABASES['postgis']['ATOMIC_REQUESTS'] = True
 
 
 # CACHES

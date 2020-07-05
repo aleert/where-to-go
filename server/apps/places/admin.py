@@ -30,7 +30,8 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'description_short', 'coord')
+    # remove coord so postgis and postgres models raise no errors
+    list_display = ('title', 'description_short')
     search_fields = ('title', )
     inlines = (ImageInline, )
 
