@@ -4,6 +4,13 @@ Stress testing with PostGIS
 
 This branch intended for comparing performance for query that select
 Place models based on their coordinates being contained in some geometric box.
+Contained box is defined by two opposite angles.
+
+**TL;DR**
+
+   It runs faster if we implement custom django wrappers for native postgresql
+   geometry types. Mainly because planning with postgis much more expensive.
+
 
 Setup
 =====
@@ -11,17 +18,86 @@ Setup
 There are two setups to compare:
 
 #.
-  Regular postgres with custom field on django side, interfacing postgres
-  ``point`` field and custom django lookup implementing ``WHERE point (x, y) <@ box (coords)``.
+   Regular postgres with custom field on django side, interfacing postgres
+   ``point`` field and custom django lookup implementing ``WHERE point (x, y) <@ box (coords)``.
 
-  There's also a ``GistIndex`` created with point field to increase above mentioned
-  lookup performance. For further details refer to ``fields.py`` and ``models.PurePostgresPlace``
-  in ``places`` app.
+   There's also a ``GistIndex`` created with point field to increase above mentioned
+   lookup performance. For further details refer to ``fields.py`` and ``models.PurePostgresPlace``
+   in ``places`` app.
 
-  (This setup based on ``progressive-loading`` branch)
+   (This setup based on ``progressive-loading`` branch from this repo, clone it if you
+   want to explore and see it in action)
 
 #.
-  This setup have ``PostGIS`` enabled and utilizes ``GeoDjango`` capabilities.
+   This setup have ``PostGIS`` enabled and utilizes ``GeoDjango`` capabilities.
+
+   If you look at models you'll notice, that there's no index. That's because
+   GeoDjango will create gist index automatically, and if we specify it explicitly
+   out migrations will fail.
+
+   We use test two different lookup types: one uses ``contained`` django lookup
+   and the other uses ``coveredby`` lookup. They both yield the same result.
+   Here's django code for them:
+
+   .. code-block:: python
+
+      from django.contrib.gis.geos import Polygon
+      p = Polygon.from_bbox((37.487, 55.716, 37.759, 55.792))
+
+      qs = Place.objects.filter(coord__contained=p).all()
+      qs2 = Place.objects.filter(coord__coveredby=p).all()
+
+Method
+======
+
+SQL requests were generated from django querysets for different bounding boxes,
+then they were executed with ``EXPLAIN ANALYZE``. Actual requests can be found
+at ``test_sql`` folder. Number in sql file name stands for number of rows returned,
+other part of the name describe setup used.
+
+Requests were made both one after another and with cache clear before each request.
+Cache clear was done with ``drop_caches.sh``.
+
+Results
+=======
+
+.. code-block::
+
+   ╔═══════════════════╦════════════╦═════════════════════════════════╦═════════════════════════════════╗
+   ║                   ║            ║          327 rows query         ║         5424 rows query         ║
+   ║                   ║            ║         (mean time, ms)         ║         (mean time, ms)         ║
+   ║                   ║            ║                                 ║                                 ║
+   ╠═══════════════════╬════════════╬══════════╦═══════════╦══════════╬══════════╦═══════════╦══════════╣
+   ║                   ║            ║ planning ║ execution ║ total    ║ planning ║ execution ║ total    ║
+   ╠═══════════════════╬════════════╬══════════╬═══════════╬══════════╬══════════╬═══════════╬══════════╣
+   ║ pure postgres     ║ with cache ║ 0.786    ║ 0.64      ║ 1.426    ║ 0.346    ║ 2.2       ║ 2.546    ║
+   ║ (custom django    ╠════════════╬══════════╬═══════════╬══════════╬══════════╬═══════════╬══════════╣
+   ║ wrappers)         ║ without    ║ 256.871  ║ 324.489   ║ 581.36   ║ 190.11   ║ 411.48    ║ 601.59   ║
+   ║                   ║ cache      ║          ║           ║          ║          ║           ║          ║
+   ╠═══════════════════╬════════════╬══════════╬═══════════╬══════════╬══════════╬═══════════╬══════════╣
+   ║ postgres with     ║ with cache ║ 43.443   ║ 0.597     ║ 44.04    ║ 37.244   ║ 3.896     ║ 41.14    ║
+   ║ postgis           ║            ║          ║           ║          ║          ║           ║          ║
+   ║ (contained django ╠════════════╬══════════╬═══════════╬══════════╬══════════╬═══════════╬══════════╣
+   ║ query)            ║ without    ║ 1137.655 ║ 330.322   ║ 1467.978 ║ 1186.038 ║ 385.188   ║ 1571.227 ║
+   ║                   ║ cache      ║          ║           ║          ║          ║           ║          ║
+   ╠═══════════════════╬════════════╬══════════╬═══════════╬══════════╬══════════╬═══════════╬══════════╣
+   ║ postgres with     ║ with cache ║ 33.448   ║ 0.635     ║ 34.083   ║ 33.922   ║ 6.738     ║ 40.66    ║
+   ║ postgis           ╠════════════╬══════════╬═══════════╬══════════╬══════════╬═══════════╬══════════╣
+   ║ (coveredby django ║ without    ║ 1410.352 ║ 286.664   ║ 1697.016 ║ 1315.517 ║ 476.276   ║ 1791.793 ║
+   ║ query)            ║ cache      ║          ║           ║          ║          ║           ║          ║
+   ╚═══════════════════╩════════════╩══════════╩═══════════╩══════════╩══════════╩═══════════╩══════════╝
+
+As we can see, native solution is faster than PostGis version, mainly because of slow
+query planning (while postgis query plans still use same indexes as native version).
+Postgis query planning can be for up to 100 times slower than native version when there's some system cache present.
+Query execution time do not differ much between versions, which is expected.
+
+You can see some results along with query plans in ``results.rst`` file.
+
+`Contact me`_ if you have any questions.
+
+
+
 
 Host machine configuration
 ==========================
@@ -30,9 +106,6 @@ Debian 10 with Postgresql 12 installed, 8gb RAM, Intel Core i5-8250U
 
 This project uses python 3.8.2 with django 3.0.7 and psycopg2 builded with --no-binary option.
 Other packages can be viewed in ``requirements/local.txt`` and ``requirements/base.txt``.
-
-Results
-=======
 
 
 I want to do it myself!
@@ -85,15 +158,15 @@ migrations or debugging with shell.
       First you need to download above mentioned data and unpack it to ``RU.txt`` somewhere.
       After that, in the same folder run:
 
-    .. code-block:: shell
+      .. code-block:: shell
 
-      awk -F "\t" '{print $2"\t"$3"\t"$3"\t"$6", "$5;}'  RU.txt > RU_postgres.txt
+         awk -F "\t" '{print $2"\t"$3"\t"$3"\t"$6", "$5;}'  RU.txt > RU_postgres.txt
 
       For postgis data run:
 
-    .. code-block:: shell
+      .. code-block:: shell
 
-      awk -F "\t" '{print $2"\t"$3"\t"$3"\t"$6"\t"$5;}'  RU.txt > RU_posgis.txt
+         awk -F "\t" '{print $2"\t"$3"\t"$3"\tSRID=4326;POINT("$6" "$5")";}'  RU.txt > RU_posgis.txt
 
    #.
       Importing data.
@@ -114,7 +187,8 @@ migrations or debugging with shell.
 
       python manage.py runserver_plus --settings=server.settings.pure_postgres
 
-   Specify ``postgis`` settings file to run development server with PostGIS setup.
+   ``postgis`` version isn't working as for now, as ``places/views.py`` should be
+   altered for postgis syntax.
 
 
 #.
@@ -130,17 +204,55 @@ migrations or debugging with shell.
 
    .. code-block:: sql
 
-      SELECT "places_place"."id", "places_place"."title", "places_place"."description_short", "places_place"."description_long", "places_place"."coord"
+      SELECT "places_place"."id",
+             "places_place"."title",
+             "places_place"."description_short",
+             "places_place"."description_long",
+             "places_place"."coord"
       FROM "places_place"
-      WHERE "places_place"."coord" <@ box '(37.759, 55.792), (37.487, 55.716)'
+      WHERE "places_place"."coord" <@ BOX '(37.759, 55.792), (37.487, 55.716)'
 
    Executing this query yields 327 results.
 
-   There are several test queries available in ``test_postgres.rst``
-   and ``test_postgis.rst`` files.
+   For ``postgis`` we have to do following:
+
+   .. code-block:: python
+
+      from django.contrib.gis.geos import Polygon
+      p = Polygon.from_bbox((37.487, 55.716, 37.759, 55.792))
+
+      qs = Place.objects.filter(coord__contained=p).all()
+
+      len(qs)
+      327
+
+   That will generate this sql query:
+
+   .. code-block:: sql
+
+      SELECT "places_place"."id",
+             "places_place"."title",
+             "places_place"."description_short",
+             "places_place"."description_long",
+             "places_place"."coord"::BYTEA
+      FROM "places_place"
+      WHERE "places_place"."coord" @ ST_GeomFromEWKB('\001\003\000\000 \346\020\000\000\001\000\000\000\005\000\000\000u\223\030\004V\276B@\317\367S\343\245\333K@u\223\030\004V\276B@L7\211A`\345K@\376\324x\351&\341B@L7\211A`\345K@\376\324x\351&\341B@\317\367S\343\245\333K@u\223\030\004V\276B@\317\367S\343\245\333K@'::BYTEA)
+
+   Note also you can use ``coord__coveredby`` to get the same result. It will yield
+   following query:
+
+   .. code-block:: sql
+
+      SELECT "places_place"."id",
+             "places_place"."title",
+             "places_place"."description_short",
+             "places_place"."description_long",
+             "places_place"."coord"::BYTEA
+      FROM "places_place"
+      WHERE ST_CoveredBy("places_place"."coord", ST_GeomFromEWKB('\001\003\000\000 \346\020\000\000\001\000\000\000\005\000\000\000u\223\030\004V\276B@\317\367S\343\245\333K@u\223\030\004V\276B@L7\211A`\345K@\376\324x\351&\341B@L7\211A`\345K@\376\324x\351&\341B@\317\367S\343\245\333K@u\223\030\004V\276B@\317\367S\343\245\333K@'::BYTEA))
 
 #.
-   Running tests.
+   Running SQL tests.
 
    Test sql files are located in ``test_sql/`` and named after number of rows
    they return. To run query you can use something like:

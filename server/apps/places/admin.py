@@ -20,7 +20,6 @@ def get_image_html(self, image: QuerySet[Image]) -> str:
 
 class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = Image
-    ordering = ('_order', )
     readonly_fields = ('image', )
 
     image = get_image_html
@@ -30,8 +29,7 @@ class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
 
-    # remove coord so postgis and postgres models raise no errors
-    list_display = ('title', 'description_short')
+    list_display = ('title', 'description_short', 'coord')
     search_fields = ('title', )
     inlines = (ImageInline, )
 
@@ -41,7 +39,7 @@ class ImageAdmin(admin.ModelAdmin):
 
     list_display = ('__str__', 'location', 'place', 'image')
     search_fields = ('place', )
-    ordering = ('place', '_order')
+    ordering = ('place', )
 
     image = get_image_html
     image.short_description = _('Image')
