@@ -47,6 +47,13 @@ There are two setups to compare:
       qs = Place.objects.filter(coord__contained=p).all()
       qs2 = Place.objects.filter(coord__coveredby=p).all()
 
+Test data
+=========
+
+Test databases use `geonames`_ ``RU`` test data, containing 361+k locations.
+Fields missing from geopoints data (short and long description) were generated from names.
+Data preparing process described in `preparing test data section`_.
+
 Method
 ======
 
@@ -94,10 +101,6 @@ Query execution time do not differ much between versions, which is expected.
 
 You can see some results along with query plans in ``results.rst`` file.
 
-`Contact me`_ if you have any questions.
-
-
-
 
 Host machine configuration
 ==========================
@@ -111,25 +114,34 @@ Other packages can be viewed in ``requirements/local.txt`` and ``requirements/ba
 I want to do it myself!
 =======================
 
+This repo have an environment file to run django locally as well as
+script for creating and dropping a databases. You can define your own databases,
+just don't forget to change ``.envs/.local/.django/.env`` and database names
+in ``server/settings/local.py``.
+
+
 Creating test databases.
 ------------------------
 
-There are two tags that have django models and migrations setup:
-``pure_postgres`` and ``postgis``. Checkout tag needed before running
-migrations or debugging with shell.
+First you need to create two databases: ``pure_postgres`` and ``postgis``.
+There's a sample sql scripts in ``sql/`` folder, or you can create user
+and databases with
+
+.. code-block:: shell
+
+   ./initdb.sh create
+
+After that login to ``test_postgis`` database as superuser and run
+
+.. code-block:: sql
+
+   CREATE EXTENSION postgis;
+
 
 #.
-   Create user and postgres databases with
-
-   .. code-block:: shell
-
-      ./initdb.sh create
-
-   Login to ``test_postgis`` database as superuser and run
-
-   .. code-block:: sql
-
-      CREATE EXTENSION postgis;
+   There are two tags that have django models and migrations setup:
+   ``pure_postgres`` and ``postgis``. Checkout tag needed before running
+   migrations or debugging with shell.
 
 #.
    Run migrations for pure_postgres database:
@@ -147,10 +159,12 @@ migrations or debugging with shell.
 #.
    Load test data.
 
-   Test data being used for these test are ``RU`` data from `<geonames http://download.geonames.org/export/dump/>`_
+   Test data being used for these test are ``RU`` data from `geonames`_
    that contains 361k points for Russia. You can use other databases, however specific file preparation
    is needed for importing this data (if you follow this steps, at least. Note also that
    postgres 12 not supported in pgloader < 3.6.1 if you want to use it instead.
+
+   .. _preparing test data section:
 
    #.
       Preparing pure_postgres data:
@@ -269,4 +283,7 @@ migrations or debugging with shell.
 
       ./drop_caches.sh
 
+`Contact me`_ if you have any questions.
+
 .. _Contact me: mailto:aleert@yandex.ru
+.. _geonames: http://download.geonames.org/export/dump/
